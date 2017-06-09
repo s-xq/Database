@@ -10,12 +10,13 @@ import com.sxq.database.util.constants.Table;
 public class SqlUtil {
 
     public static PostData getAllBooks(){
-        return new PostData("select * from book");
+        String format = "select * from %s";
+        return new PostData(String.format(format , Table.BookField.TABLE_NAME));
     }
 
     public static PostData getBooksByKeyWord(String keyWord){
-        String format = "select * from book where %s like '%s'";
-        return new PostData(String.format(format , Table.BookField.BOOK_NAME , keyWord));
+        String format = "select * from %s where %s like '%s'";
+        return new PostData(String.format(format , Table.BookField.TABLE_NAME ,Table.BookField.BOOK_NAME , keyWord));
     }
 
 

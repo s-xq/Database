@@ -2,6 +2,8 @@ package com.sxq.database;
 
 import android.app.Application;
 
+import com.sxq.database.util.Logger;
+
 import butterknife.ButterKnife;
 
 /**
@@ -20,5 +22,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         INSTANCE = this;
+        Logger.enable(true);
     }
 }

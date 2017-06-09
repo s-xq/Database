@@ -1,5 +1,7 @@
 package com.sxq.database.data.source;
 
+import android.support.annotation.NonNull;
+
 import com.sxq.database.data.bean.Book;
 
 import java.util.List;
@@ -19,5 +21,9 @@ public interface BookDataSource {
     Observable<List<Book>> refreshBooks();
 
     Observable<Book> refreshBook(long bookNo);
+
+    void deleteBook(@NonNull long bookNo);
+
+    Observable<List<Book>> searchBooks(@NonNull String keyWord);
 
 }

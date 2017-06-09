@@ -18,7 +18,7 @@ public class Logger {
 
     static int sLineNumber;
 
-    private static boolean sEnable = true;
+    private static boolean sEnable = false;
 
     public static void enable(boolean enable) {
         sEnable = enable;
