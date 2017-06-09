@@ -1,5 +1,8 @@
 package com.sxq.database.data.source.local;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.sxq.database.data.bean.Book;
 import com.sxq.database.data.source.BookDataSource;
 
@@ -12,6 +15,22 @@ import io.reactivex.Observable;
  */
 
 public class BookLocalDataSource implements BookDataSource{
+
+    @Nullable
+    private static BookLocalDataSource INSTANCE = null;
+
+    public static BookLocalDataSource getInstance(){
+        if(INSTANCE == null){
+            synchronized (BookLocalDataSource.class){
+                if(INSTANCE == null){
+                    INSTANCE = new BookLocalDataSource();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+    
     @Override
     public Observable<List<Book>> getBooks() {
         return null;
@@ -31,4 +50,16 @@ public class BookLocalDataSource implements BookDataSource{
     public Observable<Book> refreshBook(long bookNo) {
         return null;
     }
+
+    @Override
+    public void deleteBook(@NonNull long bookNo) {
+
+    }
+
+    @Override
+    public Observable<List<Book>> searchBooks(@NonNull String keyWord) {
+        return null;
+    }
+
+
 }

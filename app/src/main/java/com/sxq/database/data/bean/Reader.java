@@ -1,6 +1,7 @@
 package com.sxq.database.data.bean;
 
 import com.google.gson.annotations.SerializedName;
+import com.sxq.database.util.constants.Table.ReaderField;
 
 /**
  * Created by SXQ on 2017/6/8.
@@ -8,28 +9,28 @@ import com.google.gson.annotations.SerializedName;
 
 public class Reader {
 
-    @SerializedName("reader_no")
+    @SerializedName(ReaderField.READER_NO)
     private long mReaderNo ;
 
-    @SerializedName("name")
-    private String mReadrName ;
+    @SerializedName(ReaderField.NAME)
+    private String mReaderName;
 
-    @SerializedName("sex")
+    @SerializedName(ReaderField.SEX)
     private String mReaderSex ;
 
-    @SerializedName("home_address")
+    @SerializedName(ReaderField.HOME_ADDRESS)
     private String mHomeAddress ;
 
-    @SerializedName("phone_number")
-    private String mPhoneNumbaer ;
+    @SerializedName(ReaderField.PHONE_NUMBER)
+    private String mPhoneNumber;
 
-    @SerializedName("work_cam")
+    @SerializedName(ReaderField.WORK_CAM)
     private String mWorkCam ;
 
-    @SerializedName("create_date")
+    @SerializedName(ReaderField.CREATE_DATE)
     private String mCreateDate ;
 
-    @SerializedName("note")
+    @SerializedName(ReaderField.NOTE)
     private String mNote ;
 
     public long getReaderNo() {
@@ -40,12 +41,12 @@ public class Reader {
         mReaderNo = readerNo;
     }
 
-    public String getReadrName() {
-        return mReadrName;
+    public String getReaderName() {
+        return mReaderName;
     }
 
-    public void setReadrName(String readrName) {
-        mReadrName = readrName;
+    public void setReaderName(String readerName) {
+        mReaderName = readerName;
     }
 
     public String getReaderSex() {
@@ -64,12 +65,12 @@ public class Reader {
         mHomeAddress = homeAddress;
     }
 
-    public String getPhoneNumbaer() {
-        return mPhoneNumbaer;
+    public String getPhoneNumber() {
+        return mPhoneNumber;
     }
 
-    public void setPhoneNumbaer(String phoneNumbaer) {
-        mPhoneNumbaer = phoneNumbaer;
+    public void setPhoneNumber(String phoneNumber) {
+        mPhoneNumber = phoneNumber;
     }
 
     public String getWorkCam() {

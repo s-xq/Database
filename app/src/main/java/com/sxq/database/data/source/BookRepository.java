@@ -75,7 +75,8 @@ public class BookRepository implements BookDataSource{
             });
         }else{
             mCachedBooks = new LinkedHashMap<>();
-            return mBookLocalDataSource.getBooks()
+            return mBookRemoteDataSource
+                    .getBooks()
                     .flatMap(new Function<List<Book>, ObservableSource<List<Book>>>() {
                         @Override
                         public ObservableSource<List<Book>> apply(List<Book> books) throws Exception {
@@ -163,6 +164,18 @@ public class BookRepository implements BookDataSource{
                 });
     }
 
+    @Override
+    public void deleteBook(@NonNull long bookNo) {
+        mBookLocalDataSource.deleteBook(bookNo);
+        mCachedBooks.remove(bookNo);
+        mBookRemoteDataSource.deleteBook(bookNo);
+    }
+
+    @Override
+    public Observable<List<Book>> searchBooks(@NonNull String keyWord) {
+        return mBookRemoteDataSource.searchBooks(keyWord);
+    }
+
     private Observable<Book> getBookWithNumberFromLocalRepository(long bookNo){
         return mBookLocalDataSource
                 .getBook(bookNo)
@@ -176,5 +189,7 @@ public class BookRepository implements BookDataSource{
                     }
                 });
     }
+
+
 
 }
