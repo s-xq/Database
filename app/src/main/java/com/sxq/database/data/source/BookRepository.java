@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.sxq.database.data.bean.Book;
 import com.sxq.database.data.source.local.BookLocalDataSource;
 import com.sxq.database.data.source.remote.BookRemoteDataSource;
+import com.sxq.database.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,9 +53,15 @@ public class BookRepository implements BookDataSource{
         INSTATNCE = null;
     }
 
+    /**
+     * 内存中如果有则返回内存中的数据，否则从远程拉取
+     *
+     * @return
+     */
     @Override
     public Observable<List<Book>> getBooks() {
         if(mCachedBooks != null){
+            Logger.d("从内存加载的图书信息:" + mCachedBooks.toString());
             return Observable.fromCallable(new Callable<List<Book>>(){
                 @Override
                 public List<Book> call() throws Exception {
@@ -80,6 +87,7 @@ public class BookRepository implements BookDataSource{
                     .flatMap(new Function<List<Book>, ObservableSource<List<Book>>>() {
                         @Override
                         public ObservableSource<List<Book>> apply(List<Book> books) throws Exception {
+                            Logger.d("远程拉取的图书信息：" + books.toString());
                             return Observable
                                     .fromIterable(books)
                                     .doOnNext(new Consumer<Book>() {
@@ -104,6 +112,10 @@ public class BookRepository implements BookDataSource{
         return getBookWithNumberFromLocalRepository(bookNo);
     }
 
+    /**
+     * 目前刷新只拉取远程数据
+     * @return
+     */
     @Override
     public Observable<List<Book>> refreshBooks() {
         return mBookRemoteDataSource
@@ -111,6 +123,7 @@ public class BookRepository implements BookDataSource{
                 .flatMap(new Function<List<Book>, ObservableSource<List<Book>>>() {
                     @Override
                     public ObservableSource<List<Book>> apply(List<Book> books) throws Exception {
+                        Logger.d("刷新的图书信息：" + books.toString());
                         return Observable
                                 .fromIterable(books)
                                 .doOnNext(new Consumer<Book>() {
