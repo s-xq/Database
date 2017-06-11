@@ -3,13 +3,19 @@ package com.sxq.database.mvp.books;
 import android.support.annotation.NonNull;
 
 import com.sxq.database.data.bean.Book;
+import com.sxq.database.data.bean.Reader;
 import com.sxq.database.data.source.BookRepository;
+import com.sxq.database.util.Logger;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -27,6 +33,16 @@ public class BookPresenter implements BookContract.Presenter {
 
     @NonNull
     private final CompositeDisposable mCompositeDisposable ;
+
+
+    /**
+     * 当前选择展示的书
+     */
+    private BookFilterType mCurrentBookFilterType = BookFilterType.ALL_BOOKS;
+
+    // TODO 如果数据库修改了相关判断依据，此处注意修改
+    private static final String JUDGE_LENT_YES = "yes";
+    private static final String JUDGE_LENT_NO = "no";
 
     public BookPresenter(@NonNull BookContract.View view, @NonNull BookRepository bookRepository) {
         mView = view;
@@ -50,6 +66,33 @@ public class BookPresenter implements BookContract.Presenter {
         mCompositeDisposable.clear();
         Disposable disposable = mBookRepository
                 .getBooks()
+                .flatMap(new Function<List<Book>, ObservableSource<Book>>() {
+                    @Override
+                    public ObservableSource<Book> apply(List<Book> books) throws Exception {
+                        return Observable.fromIterable(books);
+                    }
+                })
+                .filter(new Predicate<Book>() {
+                    @Override
+                    public boolean test(Book book) throws Exception {
+                        String isBorrow = book.getIsBorrow();
+                        switch (mCurrentBookFilterType){
+                            case LENT_BOOKS:{
+                                if(isBorrow.equals(JUDGE_LENT_YES)){
+                                    return true;
+                                }else{
+                                    return false;
+                                }
+                            }
+                            case ALL_BOOKS:{
+                                return true ;
+                            }
+                            default:return true;
+                        }
+                    }
+                })
+                .toList()
+                .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<Book>>(){
@@ -76,6 +119,33 @@ public class BookPresenter implements BookContract.Presenter {
     public void refreshBooks() {
         Disposable disposable = mBookRepository
                 .refreshBooks()
+                .flatMap(new Function<List<Book>, ObservableSource<Book>>() {
+                    @Override
+                    public ObservableSource<Book> apply(List<Book> books) throws Exception {
+                        return Observable.fromIterable(books);
+                    }
+                })
+                .filter(new Predicate<Book>() {
+                    @Override
+                    public boolean test(Book book) throws Exception {
+                        String isBorrow = book.getIsBorrow();
+                        switch (mCurrentBookFilterType){
+                            case LENT_BOOKS:{
+                                if(isBorrow.equals(JUDGE_LENT_YES)){
+                                    return true;
+                                }else{
+                                    return false;
+                                }
+                            }
+                            case ALL_BOOKS:{
+                                return true ;
+                            }
+                            default:return true;
+                        }
+                    }
+                })
+                .toList()
+                .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<Book>>(){
@@ -133,5 +203,8 @@ public class BookPresenter implements BookContract.Presenter {
         mCompositeDisposable.add(disposable);
     }
 
-
+    @Override
+    public void setCurrentBookFilterType(BookFilterType bookFilterType) {
+        this.mCurrentBookFilterType = bookFilterType;
+    }
 }

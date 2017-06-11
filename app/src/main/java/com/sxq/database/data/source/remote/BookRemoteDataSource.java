@@ -54,7 +54,6 @@ public class BookRemoteDataSource implements BookDataSource{
 
     @Override
     public Observable<List<Book>> refreshBooks() {
-        Logger.d("刷新全部书信息");
         return RetrofitClient
                 .getInstance()
                 .create(RetrofitService.class)

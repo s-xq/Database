@@ -39,9 +39,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     private OnRecyclerViewItemClickListener mItemClickListener;
 
     public BookAdapter(@NonNull Context context, @NonNull List<Book> books) {
-        if (books != null) {
-            Logger.d(books.toString());
-        }
         this.mContext = context;
         mInflater = LayoutInflater.from(context);
         this.mBooks = books;
@@ -86,10 +83,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         this.mBooks.clear();
         this.mBooks.addAll(books);
         notifyDataSetChanged();
-        Logger.d("更新数据成功");
-        if (books != null) {
-            Logger.d(books.toString());
-        }
     }
 
     public class BookViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {

@@ -123,7 +123,7 @@ public class BookRepository implements BookDataSource{
                 .flatMap(new Function<List<Book>, ObservableSource<List<Book>>>() {
                     @Override
                     public ObservableSource<List<Book>> apply(List<Book> books) throws Exception {
-                        Logger.d("刷新的图书信息：" + books.toString());
+                        Logger.d("从远程刷新的图书信息：" + books.toString());
                         return Observable
                                 .fromIterable(books)
                                 .doOnNext(new Consumer<Book>() {

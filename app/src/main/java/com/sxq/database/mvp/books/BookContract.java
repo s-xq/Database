@@ -36,6 +36,8 @@ public interface BookContract {
 
         void deleteBook(int position);
 
+        void setCurrentBookFilterType(BookFilterType bookFilterType);
+
     }
 
 }

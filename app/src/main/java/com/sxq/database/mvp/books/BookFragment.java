@@ -76,8 +76,12 @@ public class BookFragment extends Fragment implements BookContract.View {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    //TODO 展示全部图书，借出图书，处理RecyclerView Type
-
+                    case R.id.nav_all:{
+                        mPresenter.setCurrentBookFilterType(BookFilterType.ALL_BOOKS);
+                    }
+                    case R.id.nav_lent:{
+                        mPresenter.setCurrentBookFilterType(BookFilterType.LENT_BOOKS);
+                    }
                 }
                 mPresenter.loadBooks();
 
@@ -155,13 +159,17 @@ public class BookFragment extends Fragment implements BookContract.View {
 
     @Override
     public void showBooks(@NonNull List<Book> books) {
-        Logger.d("展示全部书");
+        if(books != null){
+            Logger.d("展示书的信息：" + books.toString());
+        }else{
+            Logger.d("展示书的信息，books is null");
+        }
         if (mBookAdapter == null) {
             mBookAdapter = new BookAdapter(getContext(), books);
             mBookAdapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener() {
                 @Override
                 public void OnItemClick(View v, int position) {
-                    Logger.d("book item click");
+                    Logger.d("book item click , position = " + position);
                     Intent intent = new Intent(getContext(), BookDetailsActivity.class);
                     intent.putExtra(BookDetailsActivity.BOOK_NO, books.get(position).getBookNo());
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -176,7 +184,7 @@ public class BookFragment extends Fragment implements BookContract.View {
         } else {
             mBookAdapter.updateData(books);
         }
-        showEmptyView(books.isEmpty());
+        showEmptyView(books == null || books.isEmpty());
     }
 
     @Override
