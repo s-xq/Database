@@ -1,17 +1,15 @@
-package com.sxq.database.mvp.bookdetails;
+package com.sxq.database.mvp.readerdetails;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.sxq.database.R;
 
-public class BookDetailsActivity extends AppCompatActivity {
-
-    public static final String BOOK_NO = "BOOK_NO";
+public class ReaderDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_details);
+        setContentView(R.layout.activity_reader_details);
     }
 }

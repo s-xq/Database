@@ -1,8 +1,16 @@
 <resources>
     <string name="app_name">Database</string>
 
+    <string name="books">图书</string>
+    <string name="readers">读者</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="network_error">网络连接异常，请稍后再试。</string>
+    <string name="go_to_settings">查看网络设置</string>
+    <string name="package_removed_msg">已被移除。</string>
+    <string name="undo">撤销</string>
 
 
 </resources>

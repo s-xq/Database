@@ -17,16 +17,15 @@
 package com.sxq.database.retrofit;
 
 import com.sxq.database.data.bean.Book;
+import com.sxq.database.data.bean.Reader;
 import com.sxq.database.util.SqlUtil;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
-import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 /**
  * Created by SXQ on 2017/6/8.
@@ -35,14 +34,23 @@ import retrofit2.http.Query;
 public interface RetrofitService {
 
 
-    @GET(Api.PACKAGE_STATE)
-    Observable<Package> getPackageState(@Query("type") String type, @Query("postid") String postId);
-
-
     @POST(Api.API_BASE)
     @Headers("Content-type: application/json")
     Observable<List<Book>> getBookList(@Body SqlUtil.PostData postData);
 
-    @GET
-    Observable<List<String>> query(String text);
+    @POST(Api.API_BASE)
+    @Headers("Content-type: application/json")
+    Observable<List<Reader>> getReaders(@Body SqlUtil.PostData postData);
+
+    @POST(Api.API_BASE)
+    @Headers("Content-type:applicatin/json")
+    Observable<Book> getBook(@Body SqlUtil.PostData postData);
+
+    @POST(Api.API_BASE)
+    @Headers("Content-type : application/json")
+    Observable<Reader> getReader(@Body SqlUtil.PostData postData);
+
+
+    //TODO 删除、插入信息返回信息？？？？
+
 }

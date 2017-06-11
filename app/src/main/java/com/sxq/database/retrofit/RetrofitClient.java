@@ -26,7 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private RetrofitClient() {}
+    private RetrofitClient() {
+    }
 
     private static class ClientHolder {
         private static Retrofit retrofit = new Retrofit.Builder()

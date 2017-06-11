@@ -3,9 +3,7 @@ package com.sxq.database.mvp.books;
 import android.support.annotation.NonNull;
 
 import com.sxq.database.data.bean.Book;
-import com.sxq.database.data.bean.Reader;
 import com.sxq.database.data.source.BookRepository;
-import com.sxq.database.util.Logger;
 
 import java.util.List;
 
@@ -19,6 +17,8 @@ import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.sxq.database.util.constants.Table.BookContent.JUDGE_LENT_YES;
+
 /**
  * Created by SXQ on 2017/6/8.
  */
@@ -26,13 +26,13 @@ import io.reactivex.schedulers.Schedulers;
 public class BookPresenter implements BookContract.Presenter {
 
     @NonNull
-    private final BookContract.View mView ;
+    private final BookContract.View mView;
 
     @NonNull
-    private final BookRepository mBookRepository ;
+    private final BookRepository mBookRepository;
 
     @NonNull
-    private final CompositeDisposable mCompositeDisposable ;
+    private final CompositeDisposable mCompositeDisposable;
 
 
     /**
@@ -40,9 +40,6 @@ public class BookPresenter implements BookContract.Presenter {
      */
     private BookFilterType mCurrentBookFilterType = BookFilterType.ALL_BOOKS;
 
-    // TODO 如果数据库修改了相关判断依据，此处注意修改
-    private static final String JUDGE_LENT_YES = "yes";
-    private static final String JUDGE_LENT_NO = "no";
 
     public BookPresenter(@NonNull BookContract.View view, @NonNull BookRepository bookRepository) {
         mView = view;
@@ -76,18 +73,19 @@ public class BookPresenter implements BookContract.Presenter {
                     @Override
                     public boolean test(Book book) throws Exception {
                         String isBorrow = book.getIsBorrow();
-                        switch (mCurrentBookFilterType){
-                            case LENT_BOOKS:{
-                                if(isBorrow.equals(JUDGE_LENT_YES)){
+                        switch (mCurrentBookFilterType) {
+                            case LENT_BOOKS: {
+                                if (isBorrow.equals(JUDGE_LENT_YES)) {
                                     return true;
-                                }else{
+                                } else {
                                     return false;
                                 }
                             }
-                            case ALL_BOOKS:{
-                                return true ;
+                            case ALL_BOOKS: {
+                                return true;
                             }
-                            default:return true;
+                            default:
+                                return true;
                         }
                     }
                 })
@@ -95,7 +93,7 @@ public class BookPresenter implements BookContract.Presenter {
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<Book>>(){
+                .subscribeWith(new DisposableObserver<List<Book>>() {
                     @Override
                     public void onNext(List<Book> value) {
                         mView.showBooks(value);
@@ -129,18 +127,19 @@ public class BookPresenter implements BookContract.Presenter {
                     @Override
                     public boolean test(Book book) throws Exception {
                         String isBorrow = book.getIsBorrow();
-                        switch (mCurrentBookFilterType){
-                            case LENT_BOOKS:{
-                                if(isBorrow.equals(JUDGE_LENT_YES)){
+                        switch (mCurrentBookFilterType) {
+                            case LENT_BOOKS: {
+                                if (isBorrow.equals(JUDGE_LENT_YES)) {
                                     return true;
-                                }else{
+                                } else {
                                     return false;
                                 }
                             }
-                            case ALL_BOOKS:{
-                                return true ;
+                            case ALL_BOOKS: {
+                                return true;
                             }
-                            default:return true;
+                            default:
+                                return true;
                         }
                     }
                 })
@@ -148,10 +147,10 @@ public class BookPresenter implements BookContract.Presenter {
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<Book>>(){
+                .subscribeWith(new DisposableObserver<List<Book>>() {
                     @Override
                     public void onNext(List<Book> value) {
-
+                        mView.showBooks(value);
                     }
 
                     @Override
@@ -163,7 +162,6 @@ public class BookPresenter implements BookContract.Presenter {
                     @Override
                     public void onComplete() {
                         mView.setLoadingIndicator(false);
-                        loadBooks();
                     }
                 });
         mCompositeDisposable.add(disposable);
@@ -171,18 +169,18 @@ public class BookPresenter implements BookContract.Presenter {
 
     @Override
     public void deleteBook(int position) {
-        if(position < 0 ){
+        if (position < 0) {
             return;
         }
         Disposable disposable = mBookRepository
                 .getBooks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<Book>>(){
+                .subscribeWith(new DisposableObserver<List<Book>>() {
                     @Override
                     public void onNext(List<Book> value) {
                         Book mayRemovedBook = value.get(position);
-                        if(mayRemovedBook != null){
+                        if (mayRemovedBook != null) {
                             mBookRepository.deleteBook(mayRemovedBook.getBookNo());
                             value.remove(position);
                             mView.showBooks(value);

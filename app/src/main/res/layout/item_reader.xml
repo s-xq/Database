@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="64dp"
+    android:paddingBottom="64dp"
+    android:id="@+id/layoutReaderItemMain"
+    android:background="@color/layout_background">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/circleImageView"
+            android:src = "@drawable/ic_home_black_24dp"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewAvatar"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewReaderName"
+            android:maxLines="1"
+            android:textColor="@color/colorPrimaryText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewReaderAddress"
+            android:textColor="@color/colorSecondaryText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewReaderPhoneNumber"
+            android:maxLines="1"
+            android:textColor="@color/colorSecondaryText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+    </LinearLayout>
+
+</LinearLayout>

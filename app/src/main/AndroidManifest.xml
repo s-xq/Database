@@ -27,6 +27,10 @@
         </activity>
         <activity android:name=".mvp.addbook.AddBookActivity">
         </activity>
+        <activity android:name=".mvp.readerdetails.ReaderDetailsActivity">
+        </activity>
+        <activity android:name=".mvp.addReader.AddReaderActivity">
+        </activity>
     </application>
 
 </manifest>

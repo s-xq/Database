@@ -29,14 +29,4 @@ public class Api {
     public static final String API_BASE = "http://119.29.244.217:8888/";
 
 
-    /**
-     *
-     */
-    public static final String PACKAGE_STATE = API_BASE + "query";
-
-    // Auto recognize the company of a package number
-    public static final String COMPANY_QUERY = "autonumber/autoComNum";
-
-
-
 }

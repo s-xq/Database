@@ -66,7 +66,7 @@ public class BookFragment extends Fragment implements BookContract.View {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     startActivity(intent,
                             ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
-                }else{
+                } else {
                     startActivity(intent);
                 }
             }
@@ -76,10 +76,10 @@ public class BookFragment extends Fragment implements BookContract.View {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_all:{
+                    case R.id.nav_all: {
                         mPresenter.setCurrentBookFilterType(BookFilterType.ALL_BOOKS);
                     }
-                    case R.id.nav_lent:{
+                    case R.id.nav_lent: {
                         mPresenter.setCurrentBookFilterType(BookFilterType.LENT_BOOKS);
                     }
                 }
@@ -159,9 +159,9 @@ public class BookFragment extends Fragment implements BookContract.View {
 
     @Override
     public void showBooks(@NonNull List<Book> books) {
-        if(books != null){
+        if (books != null) {
             Logger.d("展示书的信息：" + books.toString());
-        }else{
+        } else {
             Logger.d("展示书的信息，books is null");
         }
         if (mBookAdapter == null) {
@@ -174,7 +174,7 @@ public class BookFragment extends Fragment implements BookContract.View {
                     intent.putExtra(BookDetailsActivity.BOOK_NO, books.get(position).getBookNo());
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
-                    }else{
+                    } else {
                         startActivity(intent);
                     }
                 }
@@ -200,8 +200,8 @@ public class BookFragment extends Fragment implements BookContract.View {
 
     @Override
     public void showNetWorkError() {
-        Snackbar.make(mFloatingActionButton, "网络异常", Snackbar.LENGTH_SHORT)
-                .setAction("查看网络设置", new View.OnClickListener() {
+        Snackbar.make(mFloatingActionButton, R.string.network_error, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.go_to_settings, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent().setAction(Settings.ACTION_SETTINGS));
@@ -213,12 +213,12 @@ public class BookFragment extends Fragment implements BookContract.View {
     @Override
     public void showPackageRemovedMsg(String bookName) {
         String msg = bookName
-                + " 已经被移除";
+                + " "
+                + getString(R.string.package_removed_msg);
         Snackbar.make(mFloatingActionButton, msg, Snackbar.LENGTH_LONG)
-                .setAction("撤销", new View.OnClickListener() {
+                .setAction(R.string.undo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO
 //                        mPresenter.recoverPackage();
                     }
                 })

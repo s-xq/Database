@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 
 public class App extends Application {
 
-    private static App INSTANCE ;
+    private static App INSTANCE;
 
     public static App getInstance() {
         return INSTANCE;

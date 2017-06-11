@@ -15,7 +15,7 @@ import java.util.List;
 public interface BookContract {
 
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         void setLoadingIndicator(boolean active);
 
@@ -28,7 +28,7 @@ public interface BookContract {
         void showPackageRemovedMsg(String bookName);
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         void loadBooks();
 

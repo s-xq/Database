@@ -4,8 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.sxq.database.data.bean.Book;
+import com.sxq.database.data.bean.Reader;
 import com.sxq.database.data.source.local.BookLocalDataSource;
+import com.sxq.database.data.source.local.ReaderLocalDataSource;
 import com.sxq.database.data.source.remote.BookRemoteDataSource;
+import com.sxq.database.data.source.remote.ReaderRemoteDataSource;
 import com.sxq.database.util.Logger;
 
 import java.util.ArrayList;
@@ -25,31 +28,34 @@ import io.reactivex.functions.Function;
  * Created by SXQ on 2017/6/8.
  */
 
-public class BookRepository implements BookDataSource{
+public class BookRepository implements BookDataSource {
 
 
-    @Nullable  private static BookRepository INSTATNCE = null;
-    @NonNull private BookDataSource mBookLocalDataSource ;
-    @NonNull private BookDataSource mBookRemoteDataSource ;
-    private Map<Long , Book> mCachedBooks;
+    @Nullable
+    private static BookRepository INSTATNCE = null;
+    @NonNull
+    private BookDataSource mBookLocalDataSource;
+    @NonNull
+    private BookDataSource mBookRemoteDataSource;
+    private Map<Long, Book> mCachedBooks;
 
-    public BookRepository(BookLocalDataSource bookLocalDataSource , BookRemoteDataSource bookRemoteDataSource){
+    public BookRepository(BookLocalDataSource bookLocalDataSource, BookRemoteDataSource bookRemoteDataSource) {
         this.mBookLocalDataSource = bookLocalDataSource;
         this.mBookRemoteDataSource = bookRemoteDataSource;
     }
 
-    public static BookRepository getInstance(BookLocalDataSource bookLocalDataSource , BookRemoteDataSource bookRemoteDataSource){
-        if(INSTATNCE == null){
-            synchronized (BookRepository.class){
-                if(INSTATNCE == null){
-                    INSTATNCE = new BookRepository(bookLocalDataSource , bookRemoteDataSource);
+    public static BookRepository getInstance(BookLocalDataSource bookLocalDataSource, BookRemoteDataSource bookRemoteDataSource) {
+        if (INSTATNCE == null) {
+            synchronized (BookRepository.class) {
+                if (INSTATNCE == null) {
+                    INSTATNCE = new BookRepository(bookLocalDataSource, bookRemoteDataSource);
                 }
             }
         }
         return INSTATNCE;
     }
 
-    public static void destroyInstance(){
+    public static void destroyInstance() {
         INSTATNCE = null;
     }
 
@@ -60,18 +66,18 @@ public class BookRepository implements BookDataSource{
      */
     @Override
     public Observable<List<Book>> getBooks() {
-        if(mCachedBooks != null){
+        if (mCachedBooks != null) {
             Logger.d("从内存加载的图书信息:" + mCachedBooks.toString());
-            return Observable.fromCallable(new Callable<List<Book>>(){
+            return Observable.fromCallable(new Callable<List<Book>>() {
                 @Override
                 public List<Book> call() throws Exception {
                     List<Book> arrayList = new ArrayList<Book>(mCachedBooks.values());
                     Collections.sort(arrayList, new Comparator<Book>() {
                         @Override
                         public int compare(Book o1, Book o2) {
-                            if(o1.getBookNo()>o2.getBookNo()){
-                                return -1 ;
-                            }else if(o1.getBookNo()<o2.getBookNo()){
+                            if (o1.getBookNo() > o2.getBookNo()) {
+                                return -1;
+                            } else if (o1.getBookNo() < o2.getBookNo()) {
                                 return 1;
                             }
                             return 0;
@@ -80,7 +86,7 @@ public class BookRepository implements BookDataSource{
                     return arrayList;
                 }
             });
-        }else{
+        } else {
             mCachedBooks = new LinkedHashMap<>();
             return mBookRemoteDataSource
                     .getBooks()
@@ -93,7 +99,7 @@ public class BookRepository implements BookDataSource{
                                     .doOnNext(new Consumer<Book>() {
                                         @Override
                                         public void accept(Book book) throws Exception {
-                                            mCachedBooks.put(book.getBookNo() , book);
+                                            mCachedBooks.put(book.getBookNo(), book);
                                         }
                                     })
                                     .toList()
@@ -105,15 +111,30 @@ public class BookRepository implements BookDataSource{
 
     @Override
     public Observable<Book> getBook(long bookNo) {
-        Book cachedBook = mCachedBooks.get(bookNo);
-        if(cachedBook != null){
+        if (mCachedBooks != null && mCachedBooks.get(bookNo) != null) {
+            Book cachedBook = mCachedBooks.get(bookNo);
             return Observable.just(cachedBook);
+        } else {
+            return mBookRemoteDataSource
+                    .getBook(bookNo)
+                    .doOnNext(new Consumer<Book>() {
+                        @Override
+                        public void accept(Book book) throws Exception {
+                            if (mCachedBooks == null) {
+                                mCachedBooks = new LinkedHashMap<Long, Book>();
+                            }
+                            /**
+                             * 更新内存中该书的信息
+                             */
+                            mCachedBooks.put(book.getBookNo(), book);
+                        }
+                    });
         }
-        return getBookWithNumberFromLocalRepository(bookNo);
     }
 
     /**
      * 目前刷新只拉取远程数据
+     *
      * @return
      */
     @Override
@@ -124,22 +145,16 @@ public class BookRepository implements BookDataSource{
                     @Override
                     public ObservableSource<List<Book>> apply(List<Book> books) throws Exception {
                         Logger.d("从远程刷新的图书信息：" + books.toString());
+                        /**
+                         * 清除内存中的所有图书信息，重新赋值
+                         */
+                        mCachedBooks = new LinkedHashMap<Long, Book>();
                         return Observable
                                 .fromIterable(books)
                                 .doOnNext(new Consumer<Book>() {
                                     @Override
                                     public void accept(Book book) throws Exception {
-                                        Book cachedBook = mCachedBooks.get(book.getBookNo());
-                                        if(cachedBook != null){
-                                            cachedBook.setBookAuthor(book.getBookAuthor());
-                                            cachedBook.setBookName(book.getBookName());
-                                            cachedBook.setBookPublisher(book.getBookPublisher());
-                                            cachedBook.setCreateDate(book.getCreateDate());
-                                            cachedBook.setKeyWord(book.getKeyWord());
-                                            cachedBook.setPage(book.getPage());
-                                            cachedBook.setPrice(book.getPrice());
-                                            cachedBook.setIsBorrow(book.getIsBorrow());
-                                        }
+                                        mCachedBooks.put(book.getBookNo(), book);
                                     }
                                 })
                                 .toList()
@@ -155,24 +170,12 @@ public class BookRepository implements BookDataSource{
                 .flatMap(new Function<Book, ObservableSource<Book>>() {
                     @Override
                     public ObservableSource<Book> apply(Book book) throws Exception {
+                        if (mCachedBooks == null) {
+                            mCachedBooks = new LinkedHashMap<Long, Book>();
+                        }
+                        mCachedBooks.put(bookNo, book);
                         return Observable
-                                .just(book)
-                                .doOnNext(new Consumer<Book>() {
-                                    @Override
-                                    public void accept(Book book) throws Exception {
-                                        Book cachedBook = mCachedBooks.get(book.getBookNo());
-                                        if(cachedBook!= null){
-                                            cachedBook.setBookAuthor(book.getBookAuthor());
-                                            cachedBook.setBookName(book.getBookName());
-                                            cachedBook.setBookPublisher(book.getBookPublisher());
-                                            cachedBook.setCreateDate(book.getCreateDate());
-                                            cachedBook.setKeyWord(book.getKeyWord());
-                                            cachedBook.setPage(book.getPage());
-                                            cachedBook.setPrice(book.getPrice());
-                                            cachedBook.setIsBorrow(book.getIsBorrow());
-                                        }
-                                    }
-                                });
+                                .just(book);
                     }
                 });
     }
@@ -189,20 +192,33 @@ public class BookRepository implements BookDataSource{
         return mBookRemoteDataSource.searchBooks(keyWord);
     }
 
-    private Observable<Book> getBookWithNumberFromLocalRepository(long bookNo){
+    @Override
+    public Observable<List<Book>> getBooks(long readerNo) {
+        return ReaderRepository
+                .getInstance(ReaderLocalDataSource.getInstance(), ReaderRemoteDataSource.getInstance())
+                .getReader(readerNo)
+                .flatMap(new Function<Reader, ObservableSource<List<Book>>>() {
+                    @Override
+                    public ObservableSource<List<Book>> apply(Reader reader) throws Exception {
+                        return mBookRemoteDataSource
+                                .getBooks(reader.getReaderNo());
+                    }
+                });
+    }
+
+    private Observable<Book> getBookWithNumberFromLocalRepository(long bookNo) {
         return mBookLocalDataSource
                 .getBook(bookNo)
                 .doOnNext(new Consumer<Book>() {
                     @Override
                     public void accept(Book book) throws Exception {
-                        if(mCachedBooks == null){
+                        if (mCachedBooks == null) {
                             mCachedBooks = new LinkedHashMap<Long, Book>();
                         }
-                        mCachedBooks.put(bookNo , book);
+                        mCachedBooks.put(bookNo, book);
                     }
                 });
     }
-
 
 
 }

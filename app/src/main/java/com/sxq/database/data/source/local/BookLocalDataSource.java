@@ -14,15 +14,15 @@ import io.reactivex.Observable;
  * Created by SXQ on 2017/6/8.
  */
 
-public class BookLocalDataSource implements BookDataSource{
+public class BookLocalDataSource implements BookDataSource {
 
     @Nullable
     private static BookLocalDataSource INSTANCE = null;
 
-    public static BookLocalDataSource getInstance(){
-        if(INSTANCE == null){
-            synchronized (BookLocalDataSource.class){
-                if(INSTANCE == null){
+    public static BookLocalDataSource getInstance() {
+        if (INSTANCE == null) {
+            synchronized (BookLocalDataSource.class) {
+                if (INSTANCE == null) {
                     INSTANCE = new BookLocalDataSource();
                 }
             }
@@ -30,7 +30,7 @@ public class BookLocalDataSource implements BookDataSource{
         return INSTANCE;
     }
 
-    
+
     @Override
     public Observable<List<Book>> getBooks() {
         return null;
@@ -61,5 +61,8 @@ public class BookLocalDataSource implements BookDataSource{
         return null;
     }
 
-
+    @Override
+    public Observable<List<Book>> getBooks(long readerNo) {
+        return null;
+    }
 }

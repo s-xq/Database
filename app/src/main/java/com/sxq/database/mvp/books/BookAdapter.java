@@ -113,7 +113,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         @Override
         public void onClick(View v) {
-            Logger.d("click");
             if (this.mItemClickListener != null) {
                 mItemClickListener.OnItemClick(v, getLayoutPosition());
             }

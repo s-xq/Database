@@ -25,6 +25,12 @@ public class Table {
         public static final String PAGE = "page";
     }
 
+    public static class BookContent {
+        // TODO 如果数据库修改了相关判断依据，此处注意修改
+        public static final String JUDGE_LENT_YES = "yes";
+        public static final String JUDGE_LENT_NO = "no";
+    }
+
 
     public static final class ReaderField {
         public static final String TABLE_NAME = "reader";

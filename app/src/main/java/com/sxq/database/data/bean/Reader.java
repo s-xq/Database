@@ -96,4 +96,10 @@ public class Reader {
     public void setNote(String note) {
         mNote = note;
     }
+
+    @Override
+    public String toString(){
+        String format = "%d , mReaderName = %s ";
+        return String.format(format , mReaderNo , mReaderName);
+    }
 }

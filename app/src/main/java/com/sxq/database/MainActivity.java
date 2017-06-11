@@ -13,11 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sxq.database.data.source.BookRepository;
+import com.sxq.database.data.source.ReaderRepository;
 import com.sxq.database.data.source.local.BookLocalDataSource;
+import com.sxq.database.data.source.local.ReaderLocalDataSource;
 import com.sxq.database.data.source.remote.BookRemoteDataSource;
+import com.sxq.database.data.source.remote.ReaderRemoteDataSource;
 import com.sxq.database.mvp.books.BookFragment;
 import com.sxq.database.mvp.books.BookPresenter;
 import com.sxq.database.mvp.readers.ReaderFragment;
+import com.sxq.database.mvp.readers.ReaderPresenter;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,8 +34,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ReaderFragment mReaderFragment;
 
     private BookPresenter mBookPresenter;
+    private ReaderPresenter mReaderPresenter;
+
 
     private static final String KEY_NAV_ITEM = "CURRENT_NAV_ITEM";
+    private static final String READER_FRAGMENT = ReaderFragment.class.getSimpleName();
+    private static final String BOOK_FRAGMENT = BookFragment.class.getSimpleName();
+
     private int mSelectedNavItem = 0;
 
     @Override
@@ -43,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Init the fragments.
         if (savedInstanceState != null) {
-            mBookFragment = (BookFragment) getSupportFragmentManager().getFragment(savedInstanceState, "BookFragment");
-            mReaderFragment = (ReaderFragment) getSupportFragmentManager().getFragment(savedInstanceState, "ReaderFragment");
+            mBookFragment = (BookFragment) getSupportFragmentManager().getFragment(savedInstanceState, BOOK_FRAGMENT);
+            mReaderFragment = (ReaderFragment) getSupportFragmentManager().getFragment(savedInstanceState, READER_FRAGMENT);
             mSelectedNavItem = savedInstanceState.getInt(KEY_NAV_ITEM);
         } else {
             mBookFragment = (BookFragment) getSupportFragmentManager().findFragmentById(R.id.content_main);
@@ -62,24 +71,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Add the fragments.
         if (!mBookFragment.isAdded()) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.content_main, mBookFragment, "BookFragment")
+                    .add(R.id.content_main, mBookFragment, BOOK_FRAGMENT)
                     .commit();
         }
 
         if (!mReaderFragment.isAdded()) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.content_main, mReaderFragment, "ReaderFragment")
+                    .add(R.id.content_main, mReaderFragment, READER_FRAGMENT)
                     .commit();
         }
 
+        /**
+         * 重新刷新仓库
+         */
         BookRepository.destroyInstance();
+        ReaderRepository.destroyInstance();
 
         mBookPresenter = new BookPresenter(mBookFragment,
                 BookRepository.getInstance(BookLocalDataSource.getInstance(),
-                        BookRemoteDataSource.getInstance()
-                ));
-
-        //TODO ReaderPresenter
+                        BookRemoteDataSource.getInstance())
+        );
+        mReaderPresenter = new ReaderPresenter(mReaderFragment,
+                ReaderRepository.getInstance(ReaderLocalDataSource.getInstance(), ReaderRemoteDataSource.getInstance())
+        );
 
 
         if (mSelectedNavItem == 0) {
@@ -93,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * Store the state when the activity may be recycled.
+     *
      * @param outState The state data.
      */
     @Override
@@ -106,10 +121,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         // Store the fragments' states.
         if (mBookFragment.isAdded()) {
-            getSupportFragmentManager().putFragment(outState, "BookFragment", mBookFragment);
+            getSupportFragmentManager().putFragment(outState, BOOK_FRAGMENT, mBookFragment);
         }
         if (mReaderFragment.isAdded()) {
-            getSupportFragmentManager().putFragment(outState, "ReaderFragment", mReaderFragment);
+            getSupportFragmentManager().putFragment(outState, READER_FRAGMENT, mReaderFragment);
         }
     }
 
@@ -128,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -178,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.hide(mReaderFragment);
         fragmentTransaction.commit();
 
-        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mToolbar.setTitle(getResources().getString(R.string.books));
         mNavigationView.setCheckedItem(R.id.nav_book);
 
     }
@@ -189,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.show(mReaderFragment);
         fragmentTransaction.commit();
 
-        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mToolbar.setTitle(getResources().getString(R.string.readers));
         mNavigationView.setCheckedItem(R.id.nav_reader);
 
     }

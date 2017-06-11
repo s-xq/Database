@@ -26,4 +26,13 @@ public interface BookDataSource {
 
     Observable<List<Book>> searchBooks(@NonNull String keyWord);
 
+    /**
+     * 根据{@link com.sxq.database.util.constants.Table.ReaderField#READER_NO}返回该读者借阅的所有书
+     *
+     * @param readerNo
+     * @return
+     */
+    Observable<List<Book>> getBooks(long readerNo);
+
 }
+
