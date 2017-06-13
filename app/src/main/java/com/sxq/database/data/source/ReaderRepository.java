@@ -199,4 +199,23 @@ public class ReaderRepository implements ReaderDataSource {
                     }
                 });
     }
+
+    @Override
+    public Observable<List<Reader>> refreshReaders(long bookNo) {
+        return BookRepository
+                .getInstance(BookLocalDataSource.getInstance(), BookRemoteDataSource.getInstance())
+                .refreshBook(bookNo)
+                .flatMap(new Function<Book, ObservableSource<List<Reader>>>() {
+                    @Override
+                    public ObservableSource<List<Reader>> apply(Book book) throws Exception {
+                        String isBorrow = book.getIsBorrow();
+                        if (isBorrow.equals(Table.BookContent.JUDGE_LENT_YES)) {
+                            return mReaderRemoteDataSource
+                                    .getReaders(bookNo);
+                        } else {
+                            return Observable.just(new ArrayList<Reader>());
+                        }
+                    }
+                });
+    }
 }

@@ -43,11 +43,11 @@ public interface RetrofitService {
     Observable<List<Reader>> getReaders(@Body SqlUtil.PostData postData);
 
     @POST(Api.API_BASE)
-    @Headers("Content-type:applicatin/json")
+    @Headers("Content-type: application/json")
     Observable<Book> getBook(@Body SqlUtil.PostData postData);
 
     @POST(Api.API_BASE)
-    @Headers("Content-type : application/json")
+    @Headers("Content-type: application/json")
     Observable<Reader> getReader(@Body SqlUtil.PostData postData);
 
 

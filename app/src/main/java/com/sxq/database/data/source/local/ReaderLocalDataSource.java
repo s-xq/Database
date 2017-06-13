@@ -60,4 +60,9 @@ public class ReaderLocalDataSource implements ReaderDataSource {
     public Observable<List<Reader>> getReaders(long bookNo) {
         return null;
     }
+
+    @Override
+    public Observable<List<Reader>> refreshReaders(long bookNo) {
+        return null;
+    }
 }

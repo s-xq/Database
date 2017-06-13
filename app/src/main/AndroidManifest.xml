@@ -23,13 +23,17 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".mvp.bookdetails.BookDetailsActivity">
+        <activity android:name=".mvp.bookdetails.BookDetailsActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".mvp.addbook.AddBookActivity">
+        <activity android:name=".mvp.addbook.AddBookActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".mvp.readerdetails.ReaderDetailsActivity">
+        <activity android:name=".mvp.readerdetails.ReaderDetailsActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".mvp.addReader.AddReaderActivity">
+        <activity android:name=".mvp.addReader.AddReaderActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

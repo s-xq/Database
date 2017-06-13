@@ -54,6 +54,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         if (mBooks != null && mBooks.size() != 0) {
             Book item = mBooks.get(position);
             if (item != null) {
+                holder.textViewBookNo.setText(item.getBookNo() + "");
                 holder.textViewBookName.setText(item.getBookName());
                 holder.textViewBookPublisher.setText(item.getBookPublisher());
                 holder.textViewBookAuthor.setText(item.getBookAuthor());
@@ -87,6 +88,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     public class BookViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
+        AppCompatTextView textViewBookNo ;
         AppCompatTextView textViewBookName;
         AppCompatTextView textViewBookPublisher;
         AppCompatTextView textViewBookAuthor;
@@ -98,7 +100,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         public BookViewHolder(View itemView, OnRecyclerViewItemClickListener listener) {
             super(itemView);
-
+            textViewBookNo = (AppCompatTextView) itemView.findViewById(R.id.textViewBookNo);
             textViewBookName = (AppCompatTextView) itemView.findViewById(R.id.textViewBookName);
             textViewBookAuthor = (AppCompatTextView) itemView.findViewById(R.id.textViewBookAuthor);
             textViewBookPublisher = (AppCompatTextView) itemView.findViewById(R.id.textViewBookPublisher);

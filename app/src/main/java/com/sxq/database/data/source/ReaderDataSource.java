@@ -33,4 +33,12 @@ public interface ReaderDataSource {
     Observable<List<Reader>> getReaders(long bookNo);
 
 
+    /**
+     * 根据{@link com.sxq.database.util.constants.Table.BookField#BOOK_NO}返回该书所有的借阅者
+     *
+     * @param bookNo
+     * @return
+     */
+    Observable<List<Reader>> refreshReaders(long bookNo);
+
 }

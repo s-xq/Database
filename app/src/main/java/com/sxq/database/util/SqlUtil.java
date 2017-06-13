@@ -8,10 +8,36 @@ import com.sxq.database.util.constants.Table.*;
  */
 
 public class SqlUtil {
+    public static class PostData {
 
-    public static PostData getAllBooks() {
-        String format = "select * from %s";
-        return new PostData(String.format(format, BookField.TABLE_NAME));
+        @SerializedName("user")
+        private final String mUserName = "xiaoqiang";
+
+        @SerializedName("pass")
+        private final String mPassword = "123456";
+
+        @SerializedName("sqlexe")
+        private String mSqlexe;
+
+        public PostData(String sqlexe) {
+            mSqlexe = sqlexe;
+        }
+
+        public String getUserName() {
+            return mUserName;
+        }
+
+        public String getPassword() {
+            return mPassword;
+        }
+
+        public String getSqlexe() {
+            return mSqlexe;
+        }
+
+        public void setSqlexe(String sqlexe) {
+            mSqlexe = sqlexe;
+        }
     }
 
     /**
@@ -22,8 +48,17 @@ public class SqlUtil {
      */
     public static PostData getBookByNo(long bookNo) {
         String format = "select * from %s where %s = %d ";
-        return new PostData(String.format(format, BookField.TABLE_NAME, BookField.BOOK_NO, bookNo));
+        String sqlexe = String.format(format, BookField.TABLE_NAME, BookField.BOOK_NO, bookNo);
+        Logger.d("根据书号获取书本信息:" + sqlexe);
+        return new PostData(sqlexe);
     }
+
+    public static PostData getAllBooks() {
+        String format = "select * from %s";
+        return new PostData(String.format(format, BookField.TABLE_NAME));
+    }
+
+
 
 
     /**
@@ -107,35 +142,5 @@ public class SqlUtil {
     }
 
 
-    public static class PostData {
 
-        @SerializedName("user")
-        private final String mUserName = "xiaoqiang";
-
-        @SerializedName("pass")
-        private final String mPassword = "123456";
-
-        @SerializedName("sqlexe")
-        private String mSqlexe;
-
-        public PostData(String sqlexe) {
-            mSqlexe = sqlexe;
-        }
-
-        public String getUserName() {
-            return mUserName;
-        }
-
-        public String getPassword() {
-            return mPassword;
-        }
-
-        public String getSqlexe() {
-            return mSqlexe;
-        }
-
-        public void setSqlexe(String sqlexe) {
-            mSqlexe = sqlexe;
-        }
-    }
 }

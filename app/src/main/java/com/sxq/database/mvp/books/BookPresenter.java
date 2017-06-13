@@ -103,6 +103,7 @@ public class BookPresenter implements BookContract.Presenter {
                     public void onError(Throwable e) {
                         mView.showEmptyView(true);
                         mView.setLoadingIndicator(false);
+                        mView.showNetWorkError();
                     }
 
                     @Override
@@ -126,6 +127,9 @@ public class BookPresenter implements BookContract.Presenter {
                 .filter(new Predicate<Book>() {
                     @Override
                     public boolean test(Book book) throws Exception {
+
+                        //ERROR 过滤有问题
+
                         String isBorrow = book.getIsBorrow();
                         switch (mCurrentBookFilterType) {
                             case LENT_BOOKS: {

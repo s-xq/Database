@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id = "@+id/circleImageViewAdd"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src = "@drawable/ic_add_white_24dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:translationZ="5dp"
+        android:background="@color/colorPrimary"
+        >
+    </de.hdodenhof.circleimageview.CircleImageView>
+
+</LinearLayout>

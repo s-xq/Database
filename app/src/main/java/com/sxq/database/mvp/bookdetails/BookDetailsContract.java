@@ -25,16 +25,23 @@ public interface BookDetailsContract {
          */
         void showBooksDetails(@NonNull Book book, @Nullable List<Reader> readers);
 
-
         void showNetworkError();
 
-        void setToolbarBackgound(@DrawableRes int resId);
+        void setToolbarBackground(@DrawableRes int resId);
+
+        void setLoadingIndicator(boolean active);
 
     }
 
     interface Presenter extends BasePresenter {
 
+        void loadBookDetails();
+
         void refreshBookDetails();
+
+        String getBookName();
+
+        void updateBookName(@NonNull String input);
 
 
     }

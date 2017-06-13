@@ -53,6 +53,7 @@ public class ReaderAdapter extends RecyclerView.Adapter<ReaderAdapter.ReaderView
         if (mReaders != null && mReaders.size() != 0) {
             Reader item = mReaders.get(position);
             if (item != null) {
+                holder.textViewReaderNo.setText(item.getReaderNo() + "");
                 holder.textViewReaderName.setText(item.getReaderName());
                 holder.textViewReaderAddress.setText(item.getHomeAddress());
                 holder.textViewReaderPhoneNumber.setText(item.getPhoneNumber());
@@ -81,6 +82,7 @@ public class ReaderAdapter extends RecyclerView.Adapter<ReaderAdapter.ReaderView
 
     public class ReaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
+        AppCompatTextView textViewReaderNo;
         AppCompatTextView textViewReaderName;
         AppCompatTextView textViewReaderPhoneNumber;
         AppCompatTextView textViewReaderAddress;
@@ -93,6 +95,7 @@ public class ReaderAdapter extends RecyclerView.Adapter<ReaderAdapter.ReaderView
         public ReaderViewHolder(View itemView, OnRecyclerViewItemClickListener listener) {
             super(itemView);
 
+            textViewReaderNo = (AppCompatTextView) itemView.findViewById(R.id.textViewReaderNo);
             textViewReaderName = (AppCompatTextView) itemView.findViewById(R.id.textViewReaderName);
             textViewReaderAddress = (AppCompatTextView) itemView.findViewById(R.id.textViewReaderAddress);
             textViewReaderPhoneNumber = (AppCompatTextView) itemView.findViewById(R.id.textViewReaderPhoneNumber);

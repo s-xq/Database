@@ -93,13 +93,19 @@ public class BookRepository implements BookDataSource {
                     .flatMap(new Function<List<Book>, ObservableSource<List<Book>>>() {
                         @Override
                         public ObservableSource<List<Book>> apply(List<Book> books) throws Exception {
+                            for(Book book : books){
+                                mCachedBooks.put(book.getBookNo(), book);
+                            }
                             Logger.d("远程拉取的图书信息：" + books.toString());
+                            Logger.d("保存的信息:" + mCachedBooks.values().toString());
                             return Observable
                                     .fromIterable(books)
                                     .doOnNext(new Consumer<Book>() {
                                         @Override
                                         public void accept(Book book) throws Exception {
-                                            mCachedBooks.put(book.getBookNo(), book);
+                                            Logger.e("??????" + book.toString());
+                                            //TODO 此处不会遍历整个List<Book>
+//                                            mCachedBooks.put(book.getBookNo(), book);
                                         }
                                     })
                                     .toList()
@@ -127,6 +133,14 @@ public class BookRepository implements BookDataSource {
                              * 更新内存中该书的信息
                              */
                             mCachedBooks.put(book.getBookNo(), book);
+                            Logger.d("网络加载，" + mCachedBooks.values().toString());
+                        }
+                    })
+                    .doOnError(new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            Logger.d("数据仓库，远程请求，书号:" + bookNo + " , " +  "异常：" + throwable.getMessage());
+                            throwable.printStackTrace();
                         }
                     });
         }
@@ -149,12 +163,18 @@ public class BookRepository implements BookDataSource {
                          * 清除内存中的所有图书信息，重新赋值
                          */
                         mCachedBooks = new LinkedHashMap<Long, Book>();
+                        for(Book book : books){
+                            mCachedBooks.put(book.getBookNo(), book);
+                        }
+                        Logger.d("保存的信息:" + mCachedBooks.values().toString());
                         return Observable
                                 .fromIterable(books)
                                 .doOnNext(new Consumer<Book>() {
                                     @Override
                                     public void accept(Book book) throws Exception {
-                                        mCachedBooks.put(book.getBookNo(), book);
+//                                        mCachedBooks.put(book.getBookNo(), book);
+//                                        Logger.d("网络加载，" + mCachedBooks.values().toString());
+                                        //TODO 此处不会遍历整个List<Book>
                                     }
                                 })
                                 .toList()
@@ -166,18 +186,19 @@ public class BookRepository implements BookDataSource {
     @Override
     public Observable<Book> refreshBook(long bookNo) {
         return mBookRemoteDataSource
-                .refreshBook(bookNo)
-                .flatMap(new Function<Book, ObservableSource<Book>>() {
-                    @Override
-                    public ObservableSource<Book> apply(Book book) throws Exception {
-                        if (mCachedBooks == null) {
-                            mCachedBooks = new LinkedHashMap<Long, Book>();
+                    .refreshBook(bookNo)
+                    .flatMap(new Function<Book, ObservableSource<Book>>() {
+                        @Override
+                        public ObservableSource<Book> apply(Book book) throws Exception {
+                            if (mCachedBooks == null) {
+                                mCachedBooks = new LinkedHashMap<Long, Book>();
+                            }
+                            mCachedBooks.put(bookNo, book);
+                            return Observable
+                                    .just(book);
                         }
-                        mCachedBooks.put(bookNo, book);
-                        return Observable
-                                .just(book);
-                    }
-                });
+                    });
+
     }
 
     @Override
@@ -197,6 +218,20 @@ public class BookRepository implements BookDataSource {
         return ReaderRepository
                 .getInstance(ReaderLocalDataSource.getInstance(), ReaderRemoteDataSource.getInstance())
                 .getReader(readerNo)
+                .flatMap(new Function<Reader, ObservableSource<List<Book>>>() {
+                    @Override
+                    public ObservableSource<List<Book>> apply(Reader reader) throws Exception {
+                        return mBookRemoteDataSource
+                                .getBooks(reader.getReaderNo());
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<Book>> refresh(long readerNo) {
+        return ReaderRepository
+                .getInstance(ReaderLocalDataSource.getInstance(), ReaderRemoteDataSource.getInstance())
+                .refreshReader(readerNo)
                 .flatMap(new Function<Reader, ObservableSource<List<Book>>>() {
                     @Override
                     public ObservableSource<List<Book>> apply(Reader reader) throws Exception {

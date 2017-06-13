@@ -78,4 +78,9 @@ public class ReaderRemoteDataSource implements ReaderDataSource {
                 .create(RetrofitService.class)
                 .getReaders(SqlUtil.getLentReadersByBookNo(bookNo));
     }
+
+    @Override
+    public Observable<List<Reader>> refreshReaders(long bookNo) {
+        return getReaders(bookNo);
+    }
 }

@@ -62,6 +62,7 @@ public class ReaderPresenter implements ReaderContract.Presenter {
                     public void onError(Throwable e) {
                         mView.showEmptyView(true);
                         mView.setLoadingIndicator(false);
+                        mView.showNetWorkError();
                     }
 
                     @Override

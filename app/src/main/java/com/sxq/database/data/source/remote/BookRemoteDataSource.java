@@ -73,6 +73,11 @@ public class BookRemoteDataSource implements BookDataSource {
     }
 
     @Override
+    public Observable<List<Book>> refresh(long readerNo) {
+        return getBooks(readerNo);
+    }
+
+    @Override
     public void deleteBook(@NonNull long bookNo) {
         //TODO
     }
@@ -84,4 +89,6 @@ public class BookRemoteDataSource implements BookDataSource {
                 .create(RetrofitService.class)
                 .getBookList(SqlUtil.searchBooksByKeyword(keyWord));
     }
+
+
 }
